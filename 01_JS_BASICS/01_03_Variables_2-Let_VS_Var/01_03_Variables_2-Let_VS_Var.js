@@ -2,7 +2,9 @@
 
 /*
 We shouldn't start a global variable with let if, then,
-we want to re-declare it
+we want to re-declare it.
+
+REASON: 'var' ignores block scope.
 
 
 let age = 12;   // NOPE!
