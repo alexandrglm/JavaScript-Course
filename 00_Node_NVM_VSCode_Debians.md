@@ -19,7 +19,9 @@ source ~/.bashrc     # or ~/.zshrc if using Zsh or whatever you use
 ```bash
 # As 2025 March, 22.14.0 is the LTS
 
-nvm install 22.14.0     # Install specific version
+nvm ls-remote           # Check latest versions available
+
+nvm install 22.14.0     # Install specific version (This, the latest LTS version)
 
 nvm use 22.14.0         # Use this version
 ```
