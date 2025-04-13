@@ -18,11 +18,11 @@ prettyPrice(100, 0.95)
 
 // GUIDED EXRERCISE
 
-/*
-const prettyPriceFast = (grossPrice, extensionPrice) => {
+// BASIC-FAST WAY
+const prettyPriceFast = (grossPriceFast, extensionPriceFast) => {
 
     // Fast way
-    return Math.floor(grossPrice) + extensionPrice
+    return Math.floor(grossPriceFast) + extensionPriceFast
 
 }
 
@@ -30,7 +30,7 @@ console.log(prettyPriceFast(3.50, 0.95));
 console.log(prettyPriceFast(3.14, 0.95));
 console.log(prettyPriceFast(100, 0.95));
 console.log(prettyPriceFast(3.242424, 0.95));
-*/
+
 
 
 // Adding Validation
