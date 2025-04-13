@@ -5,13 +5,13 @@
 ```bash
 # From https://github.com/nvm-sh/nvm
 
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bashusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash### 
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash 
 ```
 
 ### 2. Reload Shell Configuration
 
 ```bash
-source ~/.bashrc     # or ~/.zshrc if using Zsh
+source ~/.bashrc     # or ~/.zshrc if using Zsh or whatever you use
 ```
 
 ### 3. Install Node.js
