@@ -14,10 +14,6 @@
  * Modules syntax really  parsed to ES6/7
 */
 
-
-
-
-
 import path from 'path'
 //const path = require('path');
 
@@ -60,7 +56,6 @@ export default merge(webpackCommon, {
     publicPath: '/',
     assetModuleFilename: '[name][ext]'
   },
-
   module: {
     rules: [
       {
