@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>16-02 - Adding/Removing Classes</title>
+    <style>
+        body { font-family: sans-serif; padding: 1rem; }
+        .example { margin-bottom: 2rem; }
+        pre, code { background: #f4f4f4; padding: 0.5rem; display: block; }
+        .console { 
+            background: #000; 
+            color: #0f0; 
+            padding: 0.5rem; 
+            font-family: monospace;
+            white-space: pre;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .demo-box { 
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            transition: all 0.3s;
+        }
+        .highlight { background-color: #ff0; }
+        .big-text { font-size: 24px; }
+        .red-border { border: 2px solid red; }
+        .blue-bg { background-color: #d0e3ff; }
+        .rounded { border-radius: 10px; }
+        button { 
+            padding: 8px 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        button:hover { background: #45a049; }
+        .button-original { background: #f44336; }
+        .button-original:hover { background: #d32f2f; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <h1>16-02 - Adding/Removing Classes in VanillaJS</h1>
+    <hr>
+
+    <!-- Example 1: Basic Class Addition -->
+    <div class="example">
+        <h2>Example 1: Adding Classes</h2>
+        <pre><code>&lt;div id="demo1" class="demo-box"&gt;
+    This is a demo box
+&lt;/div&gt;
+
+// Add single class
+const box1 = document.getElementById('demo1');
+box1.classList.add('highlight');
+
+// Add multiple classes
+box1.classList.add('big-text', 'rounded');</code></pre>
+        <div class="console">// Console output:
+&gt; box1.classList after additions:
+  DOMTokenList(3) ["highlight", "big-text", "rounded"]</div>
+        <div id="demo1" class="demo-box">This is a demo box</div>
+        <button onclick="addDemoClasses()">Show After</button>
+        <button onclick="resetDemo1()" class="button-original">Show Original</button>
+    </div>
+
+    <hr>
+
+    <!-- Example 2: Removing Classes -->
+    <div class="example">
+        <h2>Example 2: Removing Classes</h2>
+        <pre><code>&lt;div id="demo2" class="demo-box highlight big-text rounded"&gt;
+    This box has multiple classes
+&lt;/div&gt;
+
+// Remove single class
+const box2 = document.getElementById('demo2');
+box2.classList.remove('highlight');
+
+// Remove multiple classes
+box2.classList.remove('big-text', 'rounded');</code></pre>
+        <div class="console">// Console output:
+&gt; box2.classList after removals:
+  DOMTokenList(0) []</div>
+        <div id="demo2" class="demo-box highlight big-text rounded">This box has multiple classes</div>
+        <button onclick="removeDemoClasses()">Show After</button>
+        <button onclick="resetDemo2()" class="button-original">Show Original</button>
+    </div>
+
+    <hr>
+
+    <!-- Example 3: Toggling Classes -->
+    <div class="example">
+        <h2>Example 3: Toggling Classes</h2>
+        <pre><code>&lt;div id="demo3" class="demo-box"&gt;
+    Click buttons to toggle my classes
+&lt;/div&gt;
+
+const box3 = document.getElementById('demo3');
+
+// Toggle class (add if missing, remove if present)
+box3.classList.toggle('highlight');
+
+// Force toggle (second parameter)
+box3.classList.toggle('blue-bg', true);  // Always add
+box3.classList.toggle('red-border', false); // Always remove</code></pre>
+        <div class="console">// Console output:
+&gt; After first toggle (highlight):
+  DOMTokenList(1) ["highlight"]
+
+&gt; After forced toggles:
+  DOMTokenList(2) ["highlight", "blue-bg"]</div>
+        <div id="demo3" class="demo-box">Click buttons to toggle my classes</div>
+        <button onclick="toggleDemoClasses()">Execute Toggles</button>
+        <button onclick="resetDemo3()" class="button-original">Reset</button>
+    </div>
+
+    <hr>
+
+    <!-- Example 4: Checking for Classes -->
+    <div class="example">
+        <h2>Example 4: Checking Class Existence</h2>
+        <pre><code>&lt;div id="demo4" class="demo-box highlight rounded"&gt;
+    Check my classes
+&lt;/div&gt;
+
+const box4 = document.getElementById('demo4');
+const hasHighlight = box4.classList.contains('highlight');
+const hasBigText = box4.classList.contains('big-text');
+
+console.log('Has highlight?', hasHighlight);
+console.log('Has big-text?', hasBigText);</code></pre>
+        <div class="console">// Console output:
+&gt; Has highlight? true
+&gt; Has big-text? false</div>
+        <div id="demo4" class="demo-box highlight rounded">Check my classes</div>
+        <button onclick="checkDemoClasses()">Check Classes</button>
+    </div>
+
+    <hr>
+
+    <!-- Example 5: Real-World Example -->
+    <div class="example">
+        <h2>Example 5: Practical Application</h2>
+        <pre><code>&lt;button id="toggle-btn"&gt;Toggle Menu&lt;/button&gt;
+&lt;div id="menu" class="hidden"&gt;Menu Content&lt;/div&gt;
+
+const toggleBtn = document.getElementById('toggle-btn');
+const menu = document.getElementById('menu');
+
+toggleBtn.addEventListener('click', () => {
+    menu.classList.toggle('hidden');
+    toggleBtn.textContent = menu.classList.contains('hidden') 
+        ? 'Show Menu' : 'Hide Menu';
+});</code></pre>
+        <div class="console">// Console output:
+&gt; Clicking button toggles 'hidden' class
+&gt; Button text updates accordingly</div>
+        <button id="toggle-btn">Toggle Menu</button>
+        <div id="menu" class="hidden demo-box">Menu Content</div>
+    </div>
+
+    <script>
+        // Example 1 Functions
+        function addDemoClasses() {
+            const box1 = document.getElementById('demo1');
+            box1.classList.add('highlight');
+            box1.classList.add('big-text', 'rounded');
+        }
+        
+        function resetDemo1() {
+            const box1 = document.getElementById('demo1');
+            box1.classList.remove('highlight', 'big-text', 'rounded');
+        }
+
+        // Example 2 Functions
+        function removeDemoClasses() {
+            const box2 = document.getElementById('demo2');
+            box2.classList.remove('highlight');
+            box2.classList.remove('big-text', 'rounded');
+        }
+        
+        function resetDemo2() {
+            const box2 = document.getElementById('demo2');
+            box2.classList.add('highlight', 'big-text', 'rounded');
+        }
+
+        // Example 3 Functions
+        function toggleDemoClasses() {
+            const box3 = document.getElementById('demo3');
+            box3.classList.toggle('highlight');
+            box3.classList.toggle('blue-bg', true);
+            box3.classList.toggle('red-border', false);
+        }
+        
+        function resetDemo3() {
+            const box3 = document.getElementById('demo3');
+            box3.classList.remove('highlight', 'blue-bg', 'red-border');
+        }
+
+        // Example 4 Function
+        function checkDemoClasses() {
+            const box4 = document.getElementById('demo4');
+            alert(`Has highlight? ${box4.classList.contains('highlight')}\n` +
+                  `Has big-text? ${box4.classList.contains('big-text')}`);
+        }
+
+        // Example 5 Functionality
+        document.getElementById('toggle-btn').addEventListener('click', function() {
+            const menu = document.getElementById('menu');
+            menu.classList.toggle('hidden');
+            this.textContent = menu.classList.contains('hidden') 
+                ? 'Show Menu' : 'Hide Menu';
+        });
+    </script>
+</body>
+</html>

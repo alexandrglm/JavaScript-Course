@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>16_01 - DOM Introduction</title>
+    <style>
+        body { font-family: sans-serif; padding: 1rem; }
+        .example { margin-bottom: 2rem; }
+        pre, code { background: #f4f4f4; padding: 0.5rem; display: block; }
+        .console { background: #000; color: #0f0; padding: 0.5rem; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>16_01 - DOM Introduction</h1>
+    <div class="example">
+            <h2>Regular JS Object</h2>
+            <pre>
+                <code>
+const user = {
+    name: 'Kristine',
+    email: 'kristine@devcamp.com',
+    favorites: ['Chipotle', 'Chik fil a']
+};
+                </code>
+            </pre>
+            <div class="console">
+        {<br>
+        &nbsp;"name": "Kristine",<br>
+        &nbsp;"email": "kristine@devcamp.com",<br>
+        &nbsp;"favorites": ["Chipotle", "Chik fil a"]<br>
+        }
+        </div>
+    </div>
+
+    <div class="example">
+        <h2>DOM Object Access</h2>
+        <pre>
+            <code>
+                document.body
+                document.location.href
+            </code>
+        </pre>
+        <div class="console">
+            [object HTMLBodyElement]<br>
+            "https://ejemplo.com"
+        </div>
+    </div>
+    
+    <hr>
+
+        <div class="example">
+        <h2>Accessing Elements</h2>
+        <div class="html-preview">
+            <div id="header">Welcome!</div>
+            <div class="topics">
+                <div>First Topic</div>
+                <div>Second Topic</div>
+            </div>
+        </div>
+        <pre>
+            <code>
+const header = document.getElementById('header');
+const topics = document.getElementsByClassName('topics');
+const firstTopic = topics[0].children[0].textContent;
+            </code>
+        </pre>
+        <div class="console">
+            "Welcome!"<br>
+            HTMLCollection [div.topics]<br>
+            "First Topic"
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="example">
+        <h2>Modifying Elements</h2>
+        <div class="html-preview">
+            <p><strong>Before:</strong></p>
+            <div id="sample">Original text</div>
+        </div>
+        <pre>
+            <code>
+const element = document.getElementById('sample');
+element.textContent = 'New text';
+element.innerHTML = '&lt;strong&gt;Bold text&lt;/strong&gt;';
+element.style.color = 'blue';
+element.style.fontSize = '20px';
+            </code>
+        </pre>
+        <div class="console">
+            "New text"<br>
+            "&lt;strong&gt;Bold text&lt;/strong&gt;"<br>
+            "color: blue; font-size: 20px;"
+        </div>
+        <div class="html-preview">
+            <p><strong>After:</strong></p>
+            <div style="color: blue; font-size: 20px;"><strong>Original text, now bold and blue</strong></div>
+        </div>
+    </div>
+
+    <hr>
+
+        <div class="example">
+        <h2>Example 1: Traversing the DOM</h2>
+        <div class="html-preview">
+            <p><strong>Before:</strong></p>
+            <div class="topics">
+                <div>Topic 1</div>
+                <div>Topic 2</div>
+            </div>
+            <div class="topics">
+                <div>Topic A</div>
+                <div>Topic B</div>
+            </div>
+            <div class="topics">
+                <div>JavaScript</div>
+                <div>Key Codes</div>
+            </div>
+        </div>
+        <pre>
+            <code>
+const topics = document.getElementsByClassName('topics');
+const thirdTopic = topics[2];
+const topicChildren = thirdTopic.children;
+const topicText = topicChildren[0].textContent;
+            </code>
+        </pre>
+        <div class="console">
+            HTMLCollection(3) [div.topics, div.topics, div.topics]<br>
+            &lt;div class="topics"&gt;...&lt;/div&gt;<br>
+            HTMLCollection(2) [div, div]<br>
+            "JavaScript"
+        </div>
+        <div class="html-preview">
+            <p><strong>After:</strong></p>
+            <div class="topics">
+                <div>Topic 1</div>
+                <div>Topic 2</div>
+            </div>
+            <div class="topics">
+                <div>Topic A</div>
+                <div>Topic B</div>
+            </div>
+            <div class="topics">
+                <div><strong>JavaScript</strong></div>
+                <div>Key Codes</div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+        <div class="example">
+        <h2>Example 2: Working with Document Location</h2>
+        <pre>
+            <code>
+const currentUrl = document.location.href;
+const protocol = document.location.protocol;
+const path = document.location.pathname;
+            </code>
+        </pre>
+        <div class="console">
+            "https://example.com/page"<br>
+            "https:"<br>
+            "/page"
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="example">
+        <h2>Example 3: Accessing Element Properties</h2>
+        <pre>
+            <code>
+const body = document.body;
+const htmlElement = body.parentElement;
+const childCount = body.children.length;
+            </code>
+        </pre>
+        <div class="console">
+            [object HTMLBodyElement]<br>
+            [object HTMLHtmlElement]<br>
+            2
+        </div>
+    </div>
+
+
+
+</body>
+</html>
