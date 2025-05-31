@@ -5,9 +5,9 @@
 ```bash
 # From https://github.com/nvm-sh/nvm
 
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash 
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash 
 ```
-
+__* Check latest at https://github.com/nvm-sh/nvm__
 ### 2. Reload Shell Configuration
 
 ```bash
