@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide 06-115: JavaScript Event Listeners</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --success: #27ae60;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #2a52be, #4b6cb7);
+            color: #333;
+            line-height: 1.6;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--accent), var(--secondary), var(--success));
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            color: var(--secondary);
+            font-weight: 500;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+        }
+        
+        .card::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--secondary), var(--accent));
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eaeaea;
+        }
+        
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        
+        .card-icon i {
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.6rem;
+            color: var(--primary);
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 1rem;
+            position: relative;
+        }
+        
+        .code-block::before {
+            content: 'JS';
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--accent);
+            color: white;
+            padding: 5px 12px;
+            font-size: 0.9rem;
+            border-radius: 0 0 0 8px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .console-output {
+            background: #1a1a1a;
+            color: #4af626;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            min-height: 80px;
+            white-space: pre-wrap;
+            overflow: auto;
+            max-height: 200px;
+        }
+        
+        .console-output::before {
+            content: 'Console:';
+            display: block;
+            color: #bbb;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 150px;
+        }
+        
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-run {
+            background: var(--success);
+        }
+        
+        .btn-reset {
+            background: var(--accent);
+        }
+        
+        .demo-area {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .demo-area h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            color: white;
+            text-align: center;
+            margin: 40px 0 25px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tip {
+            background: #e3f2fd;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: white;
+            font-size: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .active {
+            background: var(--primary) !important;
+            color: white !important;
+        }
+        
+        .highlight-box {
+            background: #fffacd;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px dashed #e6c200;
+            margin: 10px 0;
+        }
+        
+        .nav-link {
+            padding: 10px 15px;
+            background: #eaeaea;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+            display: inline-block;
+        }
+        
+        .nav-link:hover {
+            background: #d0d0d0;
+        }
+        
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .gallery-item {
+            width: 150px;
+            height: 150px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px;
+            text-align: center;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover .gallery-caption {
+            transform: translateY(0);
+        }
+        
+        .event-delegation {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .delegation-child {
+            width: 80px;
+            height: 80px;
+            background: var(--secondary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .delegation-child:hover {
+            background: var(--primary);
+            transform: scale(1.1);
+        }
+        
+        .custom-event-box {
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .custom-event-box:hover {
+            transform: scale(1.02);
+        }
+        
+        .performance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .perf-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .perf-card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .perf-card h3 i {
+            color: var(--accent);
+        }
+        
+        @media (max-width: 768px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .gallery-item {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-hand-pointer"></i> JavaScript Event Listeners</h1>
+            <p class="subtitle">A comprehensive guide to handling events in modern JavaScript applications</p>
+        </header>
+        
+        <h2 class="section-title">Key Methods and Properties</h2>
+        
+        <div class="card-grid">
+            <!-- Event Listener Methods -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h2 class="card-title">Event Listener Methods</h2>
+                </div>
+                
+                <div class="demo-area">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead style="background: var(--primary); color: white;">
+                            <tr>
+                                <th style="padding: 12px; text-align: left;">Method</th>
+                                <th style="padding: 12px; text-align: left;">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid #eee;"><code>addEventListener()</code></td>
+                                <td style="padding: 12px; border-bottom: 1px solid #eee;">Attaches an event handler to an element</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid #eee;"><code>removeEventListener()</code></td>
+                                <td style="padding: 12px; border-bottom: 1px solid #eee;">Removes an event handler</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px;"><code>dispatchEvent()</code></td>
+                                <td style="padding: 12px;">Triggers an event programmatically</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="code-block">
+// Adding an event listener
+const button = document.getElementById('demoBtn');
+button.addEventListener('click', handleClick);
+
+// Removing an event listener
+button.removeEventListener('click', handleClick);
+
+// Dispatching an event
+const event = new Event('custom');
+button.dispatchEvent(event);
+                </div>
+            </div>
+            
+            <!-- Event Object Properties -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h2 class="card-title">Event Object Properties</h2>
+                </div>
+                
+                <div class="demo-area">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead style="background: var(--primary); color: white;">
+                            <tr>
+                                <th style="padding: 12px; text-align: left;">Property/Method</th>
+                                <th style="padding: 12px; text-align: left;">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid #eee;"><code>target</code></td>
+                                <td style="padding: 12px; border-bottom: 1px solid #eee;">Element that triggered the event</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid #eee;"><code>type</code></td>
+                                <td style="padding: 12px; border-bottom: 1px solid #eee;">Type of event (e.g., "click")</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid #eee;"><code>clientX/clientY</code></td>
+                                <td style="padding: 12px; border-bottom: 1px solid #eee;">Mouse pointer coordinates</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid #eee;"><code>keyCode</code></td>
+                                <td style="padding: 12px; border-bottom: 1px solid #eee;">Which keyboard key was pressed</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px;"><code>preventDefault()</code></td>
+                                <td style="padding: 12px;">Stops default browser behavior</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="code-block">
+// Accessing event properties
+element.addEventListener('click', (event) => {
+    console.log('Event type:', event.type);
+    console.log('Target element:', event.target);
+    console.log('Mouse position:', event.clientX, event.clientY);
+    
+    // Prevent default behavior
+    event.preventDefault();
+});
+                </div>
+            </div>
+        </div>
+        
+        <h2 class="section-title">Practical Usage Scenarios</h2>
+        
+        <div class="card-grid">
+            <!-- Basic Click Event -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-mouse-pointer"></i>
+                    </div>
+                    <h2 class="card-title">Basic Click Event</h2>
+                </div>
+                
+                <div class="code-block">
+const button = document.querySelector('#myButton');
+
+button.addEventListener('click', (event) => {
+    console.log('Button clicked!', event.target);
+});
+                </div>
+                
+                <div class="console-output" id="click-output"></div>
+                
+                <div class="demo-area">
+                    <button id="myButton" class="btn btn-run">
+                        <i class="fas fa-hand-pointer"></i> Click Me!
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Hover Effects -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <h2 class="card-title">Hover Effects</h2>
+                </div>
+                
+                <div class="code-block">
+const images = document.querySelectorAll('.gallery-item');
+
+images.forEach(img => {
+    img.addEventListener('mouseover', (event) => {
+        const caption = event.target.querySelector('.gallery-caption');
+        caption.style.transform = 'translateY(0)';
+    });
+
+    img.addEventListener('mouseout', (event) => {
+        const caption = event.target.querySelector('.gallery-caption');
+        caption.style.transform = 'translateY(100%)';
+    });
+});
+                </div>
+                
+                <div class="demo-area">
+                    <h3>Image Gallery:</h3>
+                    <div class="gallery">
+                        <div class="gallery-item">
+                            <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b" alt="Nature">
+                            <div class="gallery-caption">Beautiful Landscape</div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e" alt="Forest">
+                            <div class="gallery-caption">Mystical Forest</div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="https://images.unsplash.com/photo-1470240731273-7821a6eeb6bd" alt="Mountains">
+                            <div class="gallery-caption">Majestic Mountains</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Event Delegation -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-sitemap"></i>
+                    </div>
+                    <h2 class="card-title">Event Delegation</h2>
+                </div>
+                
+                <div class="code-block">
+document.querySelector('#parent-container')
+  .addEventListener('click', (event) => {
+    if (event.target.classList.contains('child')) {
+        console.log('Child element clicked:', event.target.textContent);
+    }
+});
+                </div>
+                
+                <div class="console-output" id="delegation-output"></div>
+                
+                <div class="demo-area">
+                    <h3>Click on any colored box:</h3>
+                    <div id="parent-container" class="event-delegation">
+                        <div class="delegation-child child">1</div>
+                        <div class="delegation-child child">2</div>
+                        <div class="delegation-child child">3</div>
+                        <div class="delegation-child child">4</div>
+                        <div class="delegation-child child">5</div>
+                        <div class="delegation-child child">6</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h2 class="section-title">Advanced Techniques</h2>
+        
+        <div class="card-grid">
+            <!-- Custom Events -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h2 class="card-title">Custom Events</h2>
+                </div>
+                
+                <div class="code-block">
+// Create and dispatch custom events
+const customEvent = new CustomEvent('build', { 
+    detail: { time: Date.now() } 
+});
+element.dispatchEvent(customEvent);
+
+// Listen for custom events
+element.addEventListener('build', (e) => {
+    console.log('Custom event triggered at', e.detail.time);
+});
+                </div>
+                
+                <div class="console-output" id="custom-event-output"></div>
+                
+                <div class="demo-area">
+                    <div id="custom-event-box" class="custom-event-box">
+                        <h3>Click to Trigger Custom Event</h3>
+                        <p>Custom Event: "specialAction"</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Once Option -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-redo"></i>
+                    </div>
+                    <h2 class="card-title">Once Option</h2>
+                </div>
+                
+                <div class="code-block">
+// Listener that automatically removes itself
+button.addEventListener('click', () => {
+    console.log('This will only run once');
+}, { once: true });
+                </div>
+                
+                <div class="console-output" id="once-output"></div>
+                
+                <div class="demo-area">
+                    <button id="once-button" class="btn btn-run">
+                        <i class="fas fa-magic"></i> Click Once
+                    </button>
+                    <div class="tip">
+                        This button's event listener will remove itself after the first click
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h2 class="section-title">Performance & Best Practices</h2>
+        
+        <div class="performance-grid">
+            <div class="perf-card">
+                <h3><i class="fas fa-tachometer-alt"></i> Performance Considerations</h3>
+                <ul style="padding-left: 20px; margin-top: 15px;">
+                    <li style="margin-bottom: 10px;"><strong>Event Delegation:</strong> Use parent elements to handle events for multiple children</li>
+                    <li style="margin-bottom: 10px;"><strong>Debouncing:</strong> Limit rapid-fire events like scroll/resize</li>
+                    <li style="margin-bottom: 10px;"><strong>Cleanup:</strong> Remove unused event listeners to prevent memory leaks</li>
+                    <li><strong>Passive Events:</strong> Mark scroll/touch events as passive for better performance</li>
+                </ul>
+            </div>
+            
+            <div class="perf-card">
+                <h3><i class="fas fa-check-circle"></i> Best Practices</h3>
+                <ul style="padding-left: 20px; margin-top: 15px;">
+                    <li style="margin-bottom: 10px;"><strong>Semantic Event Names:</strong> Choose the most specific event type needed</li>
+                    <li style="margin-bottom: 10px;"><strong>Separate Concerns:</strong> Keep event logic separate from DOM queries</li>
+                    <li style="margin-bottom: 10px;"><strong>Early Removal:</strong> Clean up event listeners when elements are removed</li>
+                    <li style="margin-bottom: 10px;"><strong>Error Handling:</strong> Always account for potential null elements</li>
+                    <li><strong>Accessibility:</strong> Ensure keyboard equivalents for mouse events</li>
+                </ul>
+            </div>
+            
+            <div class="perf-card">
+                <h3><i class="fas fa-exclamation-triangle"></i> Common Pitfalls</h3>
+                <ul style="padding-left: 20px; margin-top: 15px;">
+                    <li style="margin-bottom: 10px;"><strong>Memory Leaks:</strong> Forgetting to remove event listeners</li>
+                    <li style="margin-bottom: 10px;"><strong>Too Many Listeners:</strong> Attaching individual listeners to many elements</li>
+                    <li style="margin-bottom: 10px;"><strong>Event Bubbling:</strong> Not understanding propagation phases</li>
+                    <li><strong>Scope Issues:</strong> Losing <code>this</code> context in callbacks</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Guide 06-115: JavaScript Event Listeners</p>
+        </div>
+    </div>
+
+    <script>
+        // Basic click event
+        document.getElementById('myButton').addEventListener('click', function(e) {
+            const output = document.getElementById('click-output');
+            output.textContent = `Button clicked!
+Target element: <button id="myButton">...</button>
+Event type: click`;
+        });
+        
+        // Hover effects for gallery
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        galleryItems.forEach(item => {
+            item.addEventListener('mouseover', function() {
+                this.querySelector('.gallery-caption').style.transform = 'translateY(0)';
+            });
+            
+            item.addEventListener('mouseout', function() {
+                this.querySelector('.gallery-caption').style.transform = 'translateY(100%)';
+            });
+        });
+        
+        // Event delegation
+        document.getElementById('parent-container').addEventListener('click', function(e) {
+            if (e.target.classList.contains('child')) {
+                const output = document.getElementById('delegation-output');
+                output.textContent = `Child element clicked: ${e.target.textContent}
+Using event delegation on parent container`;
+                
+                // Visual feedback
+                e.target.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    e.target.style.transform = '';
+                }, 300);
+            }
+        });
+        
+        // Custom events
+        const customEventBox = document.getElementById('custom-event-box');
+        customEventBox.addEventListener('click', function() {
+            // Create custom event
+            const event = new CustomEvent('specialAction', {
+                detail: { 
+                    message: 'Custom event triggered!',
+                    time: new Date().toLocaleTimeString()
+                }
+            });
+            
+            // Dispatch the event
+            this.dispatchEvent(event);
+        });
+        
+        // Listen for custom event
+        customEventBox.addEventListener('specialAction', function(e) {
+            const output = document.getElementById('custom-event-output');
+            output.textContent = `Custom event: specialAction
+Message: ${e.detail.message}
+Time: ${e.detail.time}`;
+            
+            // Visual feedback
+            this.style.background = 'linear-gradient(135deg, #ff9a9e, #fad0c4)';
+            setTimeout(() => {
+                this.style.background = 'linear-gradient(135deg, #8e44ad, #9b59b6)';
+            }, 1000);
+        });
+        
+        // Once option
+        const onceButton = document.getElementById('once-button');
+        onceButton.addEventListener('click', function() {
+            const output = document.getElementById('once-output');
+            output.textContent = 'This event listener will only run once!';
+            
+            // Visual feedback
+            this.textContent = 'Completed!';
+            this.style.background = 'var(--success)';
+            this.disabled = true;
+        }, { once: true });
+    </script>
+</body>
+</html>

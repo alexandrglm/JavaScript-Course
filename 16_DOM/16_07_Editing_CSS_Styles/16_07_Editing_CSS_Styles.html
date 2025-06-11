@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>06-117: Editing CSS Elements in Vanilla JS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --success: #27ae60;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #2a52be, #4b6cb7);
+            color: #333;
+            line-height: 1.6;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--accent), var(--secondary), var(--success));
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            color: var(--secondary);
+            font-weight: 500;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eaeaea;
+        }
+        
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        
+        .card-icon i {
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.6rem;
+            color: var(--primary);
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 1rem;
+            position: relative;
+        }
+        
+        .code-block::before {
+            content: 'JS';
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--accent);
+            color: white;
+            padding: 5px 12px;
+            font-size: 0.9rem;
+            border-radius: 0 0 0 8px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .demo-area {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .demo-box {
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-inline {
+            background: var(--accent);
+        }
+        
+        .btn-class {
+            background: var(--success);
+        }
+        
+        .btn-reset {
+            background: var(--gray);
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            color: white;
+            text-align: center;
+            margin: 40px 0 25px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .best-practices {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            margin-bottom: 40px;
+        }
+        
+        .practice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .practice-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--success);
+        }
+        
+        .practice-card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .practice-card h3 i {
+            color: var(--success);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: white;
+            font-size: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        
+        .element-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .element {
+            padding: 20px;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .element:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .image-box {
+            width: 100%;
+            height: 200px;
+            background: #e0e0e0;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        
+        .image-box img {
+            max-width: 100%;
+            max-height: 100%;
+            transition: var(--transition);
+        }
+        
+        .custom-vars {
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .var-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .var-control {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .var-control input {
+            width: 100%;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-paint-brush"></i> Editing CSS Elements in Vanilla JS</h1>
+            <p class="subtitle">Mastering dynamic style manipulation with JavaScript</p>
+        </header>
+        
+        <h2 class="section-title">Accessing DOM Elements</h2>
+        
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-mouse-pointer"></i>
+                    </div>
+                    <h2 class="card-title">Element Selection Methods</h2>
+                </div>
+                
+                <div class="code-block">
+// By ID (returns single element)
+const header = document.getElementById('header');
+
+// By class (returns HTMLCollection)
+const buttons = document.getElementsByClassName('btn');
+
+// By tag (returns HTMLCollection)
+const images = document.getElementsByTagName('img');
+
+// Modern selectors (returns NodeList)
+const cards = document.querySelectorAll('.card');
+                </div>
+                
+                <div class="demo-area">
+                    <div class="element-grid">
+                        <div class="element" id="header">Header</div>
+                        <div class="element btn">Button</div>
+                        <div class="element btn">Button</div>
+                        <div class="element"><img src="https://via.placeholder.com/50" alt="Placeholder"></div>
+                        <div class="element card">Card</div>
+                        <div class="element card">Card</div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn" onclick="selectById()">
+                            <i class="fas fa-hashtag"></i> Select by ID
+                        </button>
+                        <button class="btn" onclick="selectByClass()">
+                            <i class="fas fa-tags"></i> Select by Class
+                        </button>
+                        <button class="btn" onclick="selectByTag()">
+                            <i class="fas fa-image"></i> Select by Tag
+                        </button>
+                        <button class="btn" onclick="selectByQuery()">
+                            <i class="fas fa-search"></i> Query Selector
+                        </button>
+                    </div>
+                    
+                    <div class="console-output" id="selection-output">
+                        Selection results will appear here
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h2 class="section-title">Modifying Styles</h2>
+        
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h2 class="card-title">Inline Styles (style property)</h2>
+                </div>
+                
+                <div class="code-block">
+const element = document.querySelector('.demo-box');
+
+// Single property
+element.style.backgroundColor = 'blue';
+
+// Multiple properties
+Object.assign(element.style, {
+    border: '2px solid red',
+    borderRadius: '8px',
+    padding: '20px'
+});
+
+// CamelCase for CSS properties
+element.style.fontSize = '24px';
+                </div>
+                
+                <div class="demo-area">
+                    <div class="demo-box" id="inline-style-demo">
+                        This element will be styled with inline CSS
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-inline" onclick="applySingleStyle()">
+                            <i class="fas fa-paint-roller"></i> Single Property
+                        </button>
+                        <button class="btn btn-inline" onclick="applyMultipleStyles()">
+                            <i class="fas fa-brush"></i> Multiple Properties
+                        </button>
+                        <button class="btn btn-reset" onclick="resetInlineStyles()">
+                            <i class="fas fa-undo"></i> Reset Styles
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-css3"></i>
+                    </div>
+                    <h2 class="card-title">CSS Class Manipulation</h2>
+                </div>
+                
+                <div class="code-block">
+const element = document.querySelector('.demo-box');
+
+// Add/remove classes
+element.classList.add('active');
+element.classList.remove('hidden');
+element.classList.toggle('visible');
+
+// Replace classes
+element.classList.replace('old-class', 'new-class');
+                </div>
+                
+                <div class="demo-area">
+                    <div class="demo-box" id="class-demo">
+                        This element will have classes added/removed
+                        <div class="class-status" style="margin-top: 10px; font-size: 0.9rem;">
+                            Current classes: <span id="class-list">demo-box</span>
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-class" onclick="addClass()">
+                            <i class="fas fa-plus"></i> Add Class
+                        </button>
+                        <button class="btn btn-class" onclick="removeClass()">
+                            <i class="fas fa-minus"></i> Remove Class
+                        </button>
+                        <button class="btn btn-class" onclick="toggleClass()">
+                            <i class="fas fa-toggle-on"></i> Toggle Class
+                        </button>
+                        <button class="btn btn-reset" onclick="resetClasses()">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h2 class="section-title">Dynamic Style Changes with Events</h2>
+        
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-mouse"></i>
+                    </div>
+                    <h2 class="card-title">Mouse Events Example</h2>
+                </div>
+                
+                <div class="code-block">
+const laptop = document.querySelector('.image-box');
+
+laptop.addEventListener('mouseenter', (e) => {
+    e.target.style.borderRight = '40px solid red';
+    e.target.style.transition = 'border-color 0.3s ease';
+});
+
+laptop.addEventListener('mouseleave', (e) => {
+    e.target.style.borderRight = '40px solid transparent';
+});
+                </div>
+                
+                <div class="demo-area">
+                    <div class="image-box" id="laptop-demo">
+                        <img src="https://cdn-icons-png.flaticon.com/512/149/149241.png" alt="Laptop">
+                    </div>
+                    <p class="tip" style="text-align: center; margin-top: 15px;">
+                        Hover over the laptop to see the effect
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <h2 class="section-title">Best Practices</h2>
+        
+        <div class="best-practices">
+            <div class="practice-grid">
+                <div class="practice-card">
+                    <h3><i class="fas fa-star"></i> Prefer Classes</h3>
+                    <p>Use class manipulation instead of inline styles for better maintainability and separation of concerns.</p>
+                </div>
+                
+                <div class="practice-card">
+                    <h3><i class="fas fa-tachometer-alt"></i> Use CSS Transitions</h3>
+                    <p>Leverage CSS transitions for smooth animations rather than JavaScript-based animations.</p>
+                </div>
+                
+                <div class="practice-card">
+                    <h3><i class="fas fa-database"></i> Cache Selectors</h3>
+                    <p>Store frequently accessed elements in variables to improve performance.</p>
+                </div>
+                
+                <div class="practice-card">
+                    <h3><i class="fas fa-bolt"></i> Optimize Performance</h3>
+                    <p>Minimize layout thrashing by batching style changes when possible.</p>
+                </div>
+                
+                <div class="practice-card">
+                    <h3><i class="fas fa-palette"></i> CSS Custom Properties</h3>
+                    <p>Use CSS variables for dynamic values that need to be changed at runtime.</p>
+                    <div class="custom-vars">
+                        <div class="var-control">
+                            <label>--main-color:</label>
+                            <input type="color" id="color-picker" value="#3498db">
+                        </div>
+                        <div class="var-control">
+                            <label>--border-radius:</label>
+                            <input type="range" id="radius-slider" min="0" max="20" value="8">
+                        </div>
+                        <button class="btn" onclick="applyCustomVars()">
+                            Apply Variables
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>06-117: Editing CSS Elements in Vanilla JS | Modern Web Development Techniques</p>
+            <p>Created with best practices in mind</p>
+        </div>
+    </div>
+
+    <script>
+        // Element selection functions
+        function selectById() {
+            const header = document.getElementById('header');
+            highlightElement(header);
+            document.getElementById('selection-output').textContent = 
+                `Selected element by ID: #${header.id}`;
+        }
+        
+        function selectByClass() {
+            const buttons = document.getElementsByClassName('btn');
+            highlightElements(buttons);
+            document.getElementById('selection-output').textContent = 
+                `Selected ${buttons.length} elements by class: .btn`;
+        }
+        
+        function selectByTag() {
+            const images = document.getElementsByTagName('img');
+            highlightElements(images);
+            document.getElementById('selection-output').textContent = 
+                `Selected ${images.length} elements by tag: img`;
+        }
+        
+        function selectByQuery() {
+            const cards = document.querySelectorAll('.card');
+            highlightElements(cards);
+            document.getElementById('selection-output').textContent = 
+                `Selected ${cards.length} elements by query: .card`;
+        }
+        
+        function highlightElement(element) {
+            // Reset all highlights
+            document.querySelectorAll('.element').forEach(el => {
+                el.style.boxShadow = 'none';
+                el.style.transform = 'none';
+            });
+            
+            // Highlight selected
+            element.style.boxShadow = '0 0 0 3px var(--accent)';
+            element.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                element.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
+                element.style.transform = 'none';
+            }, 2000);
+        }
+        
+        function highlightElements(elements) {
+            // Reset all highlights
+            document.querySelectorAll('.element').forEach(el => {
+                el.style.boxShadow = 'none';
+                el.style.transform = 'none';
+            });
+            
+            // Highlight selected
+            Array.from(elements).forEach(el => {
+                el.style.boxShadow = '0 0 0 3px var(--success)';
+                el.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    el.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
+                    el.style.transform = 'none';
+                }, 2000);
+            });
+        }
+        
+        // Inline style functions
+        function applySingleStyle() {
+            const demo = document.getElementById('inline-style-demo');
+            demo.style.backgroundColor = '#3498db';
+            demo.style.color = 'white';
+        }
+        
+        function applyMultipleStyles() {
+            const demo = document.getElementById('inline-style-demo');
+            Object.assign(demo.style, {
+                backgroundColor: '#e74c3c',
+                color: 'white',
+                border: '2px solid #2c3e50',
+                borderRadius: '8px',
+                padding: '30px',
+                fontSize: '24px',
+                fontWeight: 'bold'
+            });
+        }
+        
+        function resetInlineStyles() {
+            const demo = document.getElementById('inline-style-demo');
+            demo.style = '';
+        }
+        
+        // Class manipulation functions
+        function addClass() {
+            const demo = document.getElementById('class-demo');
+            demo.classList.add('active');
+            updateClassList();
+        }
+        
+        function removeClass() {
+            const demo = document.getElementById('class-demo');
+            demo.classList.remove('active');
+            updateClassList();
+        }
+        
+        function toggleClass() {
+            const demo = document.getElementById('class-demo');
+            demo.classList.toggle('highlight');
+            updateClassList();
+        }
+        
+        function resetClasses() {
+            const demo = document.getElementById('class-demo');
+            demo.className = 'demo-box';
+            updateClassList();
+        }
+        
+        function updateClassList() {
+            const demo = document.getElementById('class-demo');
+            document.getElementById('class-list').textContent = demo.className;
+        }
+        
+        // Mouse events for laptop demo
+        const laptop = document.getElementById('laptop-demo');
+        laptop.addEventListener('mouseenter', function(e) {
+            this.style.borderRight = '40px solid red';
+            this.style.transition = 'border-color 0.3s ease';
+        });
+        
+        laptop.addEventListener('mouseleave', function(e) {
+            this.style.borderRight = '40px solid transparent';
+        });
+        
+        // Custom variables
+        function applyCustomVars() {
+            const color = document.getElementById('color-picker').value;
+            const radius = document.getElementById('radius-slider').value + 'px';
+            
+            document.documentElement.style.setProperty('--primary', color);
+            document.documentElement.style.setProperty('--border-radius', radius);
+            
+            // Update elements to show the changes
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.style.borderRadius = `var(--border-radius)`;
+            });
+        }
+        
+        // Initialize class list display
+        updateClassList();
+    </script>
+</body>
+</html>

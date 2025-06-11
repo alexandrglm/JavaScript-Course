@@ -1,0 +1,42 @@
+<!-- 
+=== EXERCISE REQUIREMENTS ===
+
+1. Use vanillaJS
+2. From PENDING TODOS, When a item is clicked, it has to be removed from the DOM
+3. Not Hide. Removed.
+4. Then, it has to be placed at COMPLETED TODOS
+-->
+
+<!-- Starter Code-->
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title></title>
+
+    <style>
+        .todoItem:hover {
+        cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="todos">
+        <h2>Pending Todos</h2>
+        <ul>
+            <li class="todoItem">El 1.</li>
+            <li class="todoItem">El 2.</li>
+            <li class="todoItem">El 3</li>
+            <li class="todoItem">El 4</li>
+            <li class="todoItem">El 5</li>
+        </ul>
+    </div>
+
+    <h2>Completed Todos</h2>
+    <ul class="completedTodoWrapper">
+        <div class="completed"></div>
+    </ul>
+<script src="./06-125_Adding_Removing_Bullets_Between_list.js"></script>
+</body>
+</html>

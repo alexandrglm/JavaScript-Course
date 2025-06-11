@@ -3,44 +3,661 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>16-03 - windows VS document</title>
+    <title>16-03 - Window vs Document</title>
     <style>
-        body { font-family: sans-serif; padding: 1rem; }
-        .example { margin-bottom: 2rem; }
-        pre, code { background: #f4f4f4; padding: 0.5rem; display: block; }
-        .console { 
-            background: #000; 
-            color: #0f0; 
-            padding: 0.5rem; 
-            font-family: monospace;
-            white-space: pre;
-            margin: 10px 0;
-            overflow-x: auto;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
-        .demo-box { 
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7f1 100%);
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .section {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: linear-gradient(to right, #3498db, #2c80b9);
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+        
+        .example {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .example:last-child {
+            border-bottom: none;
+        }
+        
+        .example-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .example-title i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+            color: #3498db;
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            border-radius: 5px;
             padding: 15px;
             margin: 15px 0;
-            border: 1px solid #ddd;
-            background: #f9f9f9;
-            transition: all 0.3s;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            position: relative;
         }
-        .highlight { background-color: #ff0; }
-        .big-text { font-size: 24px; }
-        .red-border { border: 2px solid red; }
-        .blue-bg { background-color: #d0e3ff; }
-        .rounded { border-radius: 10px; }
-        button { 
-            padding: 8px 15px;
-            margin-right: 10px;
-            cursor: pointer;
-            background: #4CAF50;
+        
+        .code-block::before {
+            content: 'JS';
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #e74c3c;
             color: white;
-            border: none;
-            border-radius: 4px;
+            padding: 3px 8px;
+            font-size: 0.8rem;
+            border-radius: 0 0 0 5px;
+            font-family: 'Segoe UI', sans-serif;
         }
-        button:hover { background: #45a049; }
-        .button-original { background: #f44336; }
-        .button-original:hover { background: #d32f2f; }
-        .hidden { display: none; }
+        
+        .console {
+            background: #1a1a1a;
+            color: #4af626;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            min-height: 80px;
+            white-space: pre-wrap;
+            overflow: auto;
+            max-height: 200px;
+        }
+        
+        .console::before {
+            content: 'Console Output:';
+            display: block;
+            color: #bbb;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            background: #3498db;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+        
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        button.reset {
+            background: #e74c3c;
+        }
+        
+        button.reset:hover {
+            background: #c0392b;
+        }
+        
+        .visual-demo {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            min-height: 100px;
+        }
+        
+        .visual-demo::before {
+            content: 'Visual Demo:';
+            display: block;
+            font-weight: bold;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+        
+        .demo-box {
+            padding: 15px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+        
+        .dimensions-display {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .dimension {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            min-width: 150px;
+        }
+        
+        .dimension-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .dimensions-display {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
     </style>
 </head>
+<body>
+    <header>
+        <h1>16-03 - Window vs Document</h1>
+        <div class="subtitle">Understanding the differences between the Window and Document objects</div>
+    </header>
+    
+    <div class="container">
+        <div class="section">
+            <div class="section-header">Window Object</div>
+            
+            <!-- Ejemplo 1: Viewport Dimensions -->
+            <div class="example">
+                <div class="example-title">
+                    <i>📏</i> Browser Viewport Dimensions
+                </div>
+                <div class="code-block">
+// Get viewport dimensions
+const viewportWidth = window.innerWidth;
+const viewportHeight = window.innerHeight;
+
+console.log(`Viewport Width: ${viewportWidth}px`);
+console.log(`Viewport Height: ${viewportHeight}px`);
+                </div>
+                <div class="console" id="viewport-console"></div>
+                <div class="dimensions-display">
+                    <div class="dimension">
+                        Viewport Width
+                        <div class="dimension-value" id="viewport-width">--</div>
+                    </div>
+                    <div class="dimension">
+                        Viewport Height
+                        <div class="dimension-value" id="viewport-height">--</div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button onclick="getViewportDimensions()">Get Dimensions</button>
+                    <button onclick="resizeWindow()">Simulate Resize</button>
+                </div>
+            </div>
+            
+            <!-- Ejemplo 2: Navigation -->
+            <div class="example">
+                <div class="example-title">
+                    <i>🌐</i> Navigation
+                </div>
+                <div class="code-block">
+// Navigation
+window.location.href = 'https://example.com';
+                </div>
+                <div class="console">
+Redirecting to: https://example.com
+                </div>
+                <div class="visual-demo">
+                    <div class="demo-box">
+                        <p>This would normally redirect the browser to the specified URL.</p>
+                        <p>For demonstration purposes, we're simulating the behavior.</p>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button onclick="simulateNavigation()">Simulate Navigation</button>
+                </div>
+            </div>
+            
+            <!-- Ejemplo 3: Timers -->
+            <div class="example">
+                <div class="example-title">
+                    <i>⏱️</i> Timers
+                </div>
+                <div class="code-block">
+// Set a timeout
+window.setTimeout(() => {
+    console.log('Delayed execution after 1 second');
+}, 1000);
+                </div>
+                <div class="console" id="timer-console"></div>
+                <div class="visual-demo">
+                    <div class="demo-box" id="timer-box">
+                        Timer not started yet
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button onclick="startTimer()">Start Timer</button>
+                    <button class="reset" onclick="resetTimer()">Reset</button>
+                </div>
+            </div>
+            
+            <!-- Ejemplo 4: Storage -->
+            <div class="example">
+                <div class="example-title">
+                    <i>💾</i> Storage
+                </div>
+                <div class="code-block">
+// Store data
+window.localStorage.setItem('user', 'John Doe');
+window.localStorage.setItem('theme', 'dark');
+
+// Retrieve data
+const userName = window.localStorage.getItem('user');
+const theme = window.localStorage.getItem('theme');
+
+console.log(`User: ${userName}`);
+console.log(`Theme: ${theme}`);
+                </div>
+                <div class="console" id="storage-console"></div>
+                <div class="visual-demo">
+                    <div class="demo-box">
+                        <p>Data stored in localStorage:</p>
+                        <p id="storage-data">No data stored</p>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button onclick="storeData()">Store Data</button>
+                    <button onclick="retrieveData()">Retrieve Data</button>
+                    <button class="reset" onclick="clearStorage()">Clear Storage</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-header">Document Object</div>
+            
+            <!-- Ejemplo 5: DOM Manipulation -->
+            <div class="example">
+                <div class="example-title">
+                    <i>🛠️</i> DOM Manipulation
+                </div>
+                <div class="code-block">
+// Get elements
+const header = document.getElementById('dom-header');
+const buttons = document.querySelectorAll('.dom-btn');
+
+console.log('Header element:', header);
+console.log('Number of buttons:', buttons.length);
+                </div>
+                <div class="console" id="dom-console"></div>
+                <div class="visual-demo">
+                    <div class="demo-box">
+                        <h3 id="dom-header">DOM Manipulation Example</h3>
+                        <button class="dom-btn">Button 1</button>
+                        <button class="dom-btn">Button 2</button>
+                        <button class="dom-btn">Button 3</button>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button onclick="domManipulation()">Select Elements</button>
+                    <button class="reset" onclick="resetDOM()">Reset</button>
+                </div>
+            </div>
+            
+            <!-- Ejemplo 6: Content Modification -->
+            <div class="example">
+                <div class="example-title">
+                    <i>✏️</i> Content Modification
+                </div>
+                <div class="code-block">
+// Modify document content
+document.title = 'New Page Title';
+
+// Modify element content
+const element = document.getElementById('modify-demo');
+element.textContent = 'Content has been changed!';
+element.style.color = 'blue';
+element.style.fontSize = '24px';
+                </div>
+                <div class="console">
+Title changed to: New Page Title
+Element modified: #modify-demo
+                </div>
+                <div class="visual-demo">
+                    <div class="demo-box">
+                        <p id="modify-demo">Original content - click "Modify" to change me</p>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button onclick="modifyContent()">Modify Content</button>
+                    <button class="reset" onclick="resetContent()">Restore Original</button>
+                </div>
+            </div>
+            
+            <!-- Ejemplo 7: Element Creation -->
+            <div class="example">
+                <div class="example-title">
+                    <i>✨</i> Element Creation
+                </div>
+                <div class="code-block">
+// Create a new element
+const newDiv = document.createElement('div');
+newDiv.textContent = 'Newly created div element';
+newDiv.className = 'new-element';
+newDiv.style.backgroundColor = '#e3f2fd';
+newDiv.style.padding = '15px';
+newDiv.style.borderRadius = '5px';
+newDiv.style.marginTop = '10px';
+
+// Append to document
+document.getElementById('element-container').appendChild(newDiv);
+
+console.log('New element created and appended');
+                </div>
+                <div class="console" id="creation-console"></div>
+                <div class="visual-demo">
+                    <div class="demo-box" id="element-container">
+                        Container for new elements:
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button onclick="createElement()">Create Element</button>
+                    <button class="reset" onclick="resetElements()">Remove Elements</button>
+                </div>
+            </div>
+            
+            <!-- Ejemplo 8: Document Properties -->
+            <div class="example">
+                <div class="example-title">
+                    <i>📄</i> Document Properties
+                </div>
+                <div class="code-block">
+// Access document properties
+const docTitle = document.title;
+const docURL = document.URL;
+const docCharset = document.characterSet;
+
+console.log(`Title: ${docTitle}`);
+console.log(`URL: ${docURL}`);
+console.log(`Charset: ${docCharset}`);
+                </div>
+                <div class="console" id="properties-console"></div>
+                <div class="visual-demo">
+                    <div class="demo-box">
+                        <p>Document properties provide information about the current page.</p>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button onclick="getDocProperties()">Get Properties</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Guide 16-03 - Window vs Document</p>
+    </footer>
+
+    <script>
+        // Window examples
+        
+        // Viewport Dimensions
+        function getViewportDimensions() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            
+            document.getElementById('viewport-width').textContent = `${width}px`;
+            document.getElementById('viewport-height').textContent = `${height}px`;
+            
+            const consoleOutput = `Viewport Width: ${width}px\nViewport Height: ${height}px`;
+            document.getElementById('viewport-console').textContent = consoleOutput;
+        }
+        
+        function resizeWindow() {
+            const demoBox = document.createElement('div');
+            demoBox.innerHTML = '<p>Resizing window... check the viewport dimensions again after the animation.</p>';
+            demoBox.className = 'demo-box';
+            document.getElementById('viewport-console').after(demoBox);
+            
+            // Simulate resize effect
+            setTimeout(() => {
+                getViewportDimensions();
+                demoBox.remove();
+            }, 1000);
+        }
+        
+        // Navigation
+        function simulateNavigation() {
+            const consoleOutput = document.querySelector('.example:nth-child(2) .console');
+            consoleOutput.innerHTML = 'Redirecting to: https://example.com\n\nFor security reasons, actual redirection is disabled in this demo.';
+            
+            // Simulate loading effect
+            const demoBox = document.querySelector('.example:nth-child(2) .demo-box');
+            demoBox.innerHTML = '<p>Simulating redirection to example.com...</p><div class="loader"></div>';
+            
+            setTimeout(() => {
+                demoBox.innerHTML = '<p>This would normally redirect the browser to the specified URL.</p><p>For demonstration purposes, we\'re simulating the behavior.</p>';
+            }, 1500);
+        }
+        
+        // Timers
+        function startTimer() {
+            const consoleOutput = document.getElementById('timer-console');
+            const timerBox = document.getElementById('timer-box');
+            
+            consoleOutput.textContent = 'Timer started...';
+            timerBox.textContent = 'Waiting for timer...';
+            timerBox.style.backgroundColor = '#fff3cd';
+            
+            window.setTimeout(() => {
+                consoleOutput.textContent = 'Delayed execution after 1 second';
+                timerBox.textContent = 'Timer completed!';
+                timerBox.style.backgroundColor = '#d4edda';
+            }, 1000);
+        }
+        
+        function resetTimer() {
+            document.getElementById('timer-console').textContent = '';
+            document.getElementById('timer-box').textContent = 'Timer not started yet';
+            document.getElementById('timer-box').style.backgroundColor = '';
+        }
+        
+        // Storage
+        function storeData() {
+            window.localStorage.setItem('user', 'John Doe');
+            window.localStorage.setItem('theme', 'dark');
+            window.localStorage.setItem('lastVisit', new Date().toLocaleString());
+            
+            document.getElementById('storage-data').textContent = 
+                `user: "John Doe"\ntheme: "dark"\nlastVisit: "${new Date().toLocaleString()}"`;
+            
+            document.getElementById('storage-console').textContent = 
+                'Data stored:\n- user: "John Doe"\n- theme: "dark"\n- lastVisit: current timestamp';
+        }
+        
+        function retrieveData() {
+            const user = window.localStorage.getItem('user');
+            const theme = window.localStorage.getItem('theme');
+            const lastVisit = window.localStorage.getItem('lastVisit');
+            
+            if (user) {
+                document.getElementById('storage-console').textContent = 
+                    `Retrieved data:\nUser: ${user}\nTheme: ${theme}\nLast Visit: ${lastVisit || 'N/A'}`;
+            } else {
+                document.getElementById('storage-console').textContent = 'No data found in localStorage.';
+            }
+        }
+        
+        function clearStorage() {
+            window.localStorage.clear();
+            document.getElementById('storage-console').textContent = 'localStorage cleared!';
+            document.getElementById('storage-data').textContent = 'No data stored';
+        }
+        
+        // Document examples
+        
+        // DOM Manipulation
+        function domManipulation() {
+            const header = document.getElementById('dom-header');
+            const buttons = document.querySelectorAll('.dom-btn');
+            
+            // Highlight elements
+            header.classList.add('highlight');
+            buttons.forEach(btn => btn.classList.add('highlight'));
+            
+            document.getElementById('dom-console').textContent = 
+                `Header element: <h3 id="dom-header">...</h3>\nNumber of buttons: ${buttons.length}`;
+        }
+        
+        function resetDOM() {
+            document.getElementById('dom-header').classList.remove('highlight');
+            document.querySelectorAll('.dom-btn').forEach(btn => {
+                btn.classList.remove('highlight');
+            });
+            document.getElementById('dom-console').textContent = '';
+        }
+        
+        // Content Modification
+        function modifyContent() {
+            const element = document.getElementById('modify-demo');
+            element.textContent = 'Content has been changed!';
+            element.style.color = 'blue';
+            element.style.fontSize = '24px';
+            element.style.fontWeight = 'bold';
+            
+            // Change page title
+            document.title = 'New Page Title';
+        }
+        
+        function resetContent() {
+            const element = document.getElementById('modify-demo');
+            element.textContent = 'Original content - click "Modify" to change me';
+            element.style = '';
+            document.title = '16-03 - Window vs Document';
+        }
+        
+        // Element Creation
+        function createElement() {
+            const newDiv = document.createElement('div');
+            newDiv.textContent = 'Newly created div element - ' + new Date().toLocaleTimeString();
+            newDiv.className = 'demo-box';
+            newDiv.style.backgroundColor = '#e3f2fd';
+            newDiv.style.padding = '15px';
+            newDiv.style.borderRadius = '5px';
+            newDiv.style.marginTop = '10px';
+            
+            document.getElementById('element-container').appendChild(newDiv);
+            document.getElementById('creation-console').textContent = 
+                `New element created and appended at ${new Date().toLocaleTimeString()}`;
+        }
+        
+        function resetElements() {
+            const container = document.getElementById('element-container');
+            while (container.children.length > 1) {
+                container.removeChild(container.lastChild);
+            }
+            document.getElementById('creation-console').textContent = '';
+        }
+        
+        // Document Properties
+        function getDocProperties() {
+            const title = document.title;
+            const url = document.URL;
+            const charset = document.characterSet;
+            const lastModified = document.lastModified;
+            
+            document.getElementById('properties-console').textContent = 
+                `Title: ${title}\nURL: ${url}\nCharset: ${charset}\nLast Modified: ${lastModified}`;
+        }
+        
+        // Initialize
+        window.onload = function() {
+            getViewportDimensions();
+        };
+    </script>
+</body>
+</html>

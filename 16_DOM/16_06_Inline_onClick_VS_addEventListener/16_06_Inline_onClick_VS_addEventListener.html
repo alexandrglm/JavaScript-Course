@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>06-116: Inline onclick vs addEventListener</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --success: #27ae60;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+            --inline: #e74c3c;
+            --addlistener: #27ae60;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #2a52be, #4b6cb7);
+            color: #333;
+            line-height: 1.6;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--inline), var(--addlistener));
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--inline), var(--addlistener));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            color: var(--secondary);
+            font-weight: 500;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .comparison-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .approach {
+            flex: 1;
+            min-width: 350px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .approach::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+        }
+        
+        .inline-approach::after {
+            background: var(--inline);
+        }
+        
+        .addlistener-approach::after {
+            background: var(--addlistener);
+        }
+        
+        .approach-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eaeaea;
+        }
+        
+        .approach-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .inline-approach .approach-icon {
+            background: var(--inline);
+        }
+        
+        .addlistener-approach .approach-icon {
+            background: var(--addlistener);
+        }
+        
+        .approach-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 1rem;
+            position: relative;
+        }
+        
+        .code-block::before {
+            content: 'JS';
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--accent);
+            color: white;
+            padding: 5px 12px;
+            font-size: 0.9rem;
+            border-radius: 0 0 0 8px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .demo-area {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 200px;
+            font-size: 1.1rem;
+        }
+        
+        .btn-inline {
+            background: var(--inline);
+        }
+        
+        .btn-addlistener {
+            background: var(--addlistener);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .console-output {
+            background: #1a1a1a;
+            color: #4af626;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            min-height: 80px;
+            white-space: pre-wrap;
+            overflow: auto;
+            max-height: 200px;
+        }
+        
+        .console-output::before {
+            content: 'Console:';
+            display: block;
+            color: #bbb;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .comparison-section {
+            margin-top: 40px;
+        }
+        
+        .comparison-title {
+            font-size: 2rem;
+            color: white;
+            text-align: center;
+            margin: 40px 0 25px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .comparison-table {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            margin-bottom: 40px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .inline-cell {
+            color: var(--inline);
+            font-weight: bold;
+        }
+        
+        .addlistener-cell {
+            color: var(--addlistener);
+            font-weight: bold;
+        }
+        
+        .best-practices {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            margin-bottom: 40px;
+        }
+        
+        .practice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .practice-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--addlistener);
+        }
+        
+        .practice-card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .practice-card h3 i {
+            color: var(--addlistener);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: white;
+            font-size: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        
+        .dynamic-container {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f0f8ff;
+            border-radius: 8px;
+        }
+        
+        .dynamic-element {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            background: var(--secondary);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .dynamic-element:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        @media (max-width: 768px) {
+            .comparison-section {
+                flex-direction: column;
+            }
+            
+            .approach {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-code-compare"></i> Inline onclick vs addEventListener</h1>
+            <p class="subtitle">Understanding the differences and when to use each approach</p>
+        </header>
+        
+        <div class="comparison-section">
+            <!-- Inline onclick Approach -->
+            <div class="approach inline-approach">
+                <div class="approach-header">
+                    <div class="approach-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h2 class="approach-title">Inline onclick Approach</h2>
+                </div>
+                
+                <div class="code-block">
+&lt;button onclick="handleClick()"&gt;Click Me&lt;/button&gt;
+
+&lt;script&gt;
+function handleClick() {
+  console.log('Button clicked!');
+  updateCounter('inline-counter');
+}
+&lt;/script&gt;
+                </div>
+                
+                <div class="demo-area">
+                    <button class="btn btn-inline" onclick="handleClick(); updateCounter('inline-counter');">
+                        <i class="fas fa-hand-pointer"></i> Click Me (Inline)
+                    </button>
+                    <div class="console-output" id="inline-console"></div>
+                    <div id="inline-counter">Click count: 0</div>
+                </div>
+                
+                <h3>Characteristics:</h3>
+                <ul style="padding-left: 20px; margin: 15px 0;">
+                    <li style="margin-bottom: 10px;">Event handler defined directly in HTML</li>
+                    <li style="margin-bottom: 10px;">Simple for quick prototypes</li>
+                    <li style="margin-bottom: 10px;">Mixes HTML structure with JavaScript behavior</li>
+                    <li>Supports only one handler per event</li>
+                </ul>
+            </div>
+            
+            <!-- addEventListener Approach -->
+            <div class="approach addlistener-approach">
+                <div class="approach-header">
+                    <div class="approach-icon">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <h2 class="approach-title">addEventListener Approach</h2>
+                </div>
+                
+                <div class="code-block">
+&lt;button id="addListenerBtn"&gt;Click Me&lt;/button&gt;
+
+&lt;script&gt;
+const button = document.getElementById('addListenerBtn');
+
+// First event handler
+button.addEventListener('click', function() {
+  console.log('First handler executed');
+  updateCounter('addlistener-counter');
+});
+
+// Second event handler
+button.addEventListener('click', function() {
+  console.log('Second handler executed');
+});
+&lt;/script&gt;
+                </div>
+                
+                <div class="demo-area">
+                    <button id="addListenerBtn" class="btn btn-addlistener">
+                        <i class="fas fa-hand-pointer"></i> Click Me (addEventListener)
+                    </button>
+                    <div class="console-output" id="addlistener-console"></div>
+                    <div id="addlistener-counter">Click count: 0</div>
+                </div>
+                
+                <h3>Characteristics:</h3>
+                <ul style="padding-left: 20px; margin: 15px 0;">
+                    <li style="margin-bottom: 10px;">Separates behavior from structure</li>
+                    <li style="margin-bottom: 10px;">Allows multiple handlers per event</li>
+                    <li style="margin-bottom: 10px;">Provides better control over event phases</li>
+                    <li>Easier to remove event listeners</li>
+                </ul>
+            </div>
+        </div>
+        
+        <h2 class="comparison-title">Key Differences</h2>
+        
+        <div class="comparison-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Inline onclick</th>
+                        <th>addEventListener</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Separation of concerns</td>
+                        <td class="inline-cell">Poor (mixes HTML/JS)</td>
+                        <td class="addlistener-cell">Excellent</td>
+                    </tr>
+                    <tr>
+                        <td>Multiple handlers</td>
+                        <td class="inline-cell">No</td>
+                        <td class="addlistener-cell">Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Event phases</td>
+                        <td class="inline-cell">Only bubbling</td>
+                        <td class="addlistener-cell">Can use capturing/bubbling</td>
+                    </tr>
+                    <tr>
+                        <td>Removal</td>
+                        <td class="inline-cell">Difficult</td>
+                        <td class="addlistener-cell">Easy (removeEventListener)</td>
+                    </tr>
+                    <tr>
+                        <td>Dynamic elements</td>
+                        <td class="inline-cell">Works</td>
+                        <td class="addlistener-cell">Requires delegation</td>
+                    </tr>
+                    <tr>
+                        <td>Best practice</td>
+                        <td class="inline-cell">Generally avoided</td>
+                        <td class="addlistener-cell">Preferred</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <h2 class="comparison-title">When to Use Each Approach</h2>
+        
+        <div class="comparison-section">
+            <div class="approach">
+                <div class="approach-header">
+                    <div class="approach-icon" style="background: var(--inline);">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h2 class="approach-title">Use Inline onclick When:</h2>
+                </div>
+                <ul style="padding-left: 20px; margin: 15px 0;">
+                    <li style="margin-bottom: 10px;">Quickly prototyping ideas</li>
+                    <li style="margin-bottom: 10px;">Working with simple, one-off events</li>
+                    <li style="margin-bottom: 10px;">Needing to pass specific parameters directly</li>
+                    <li>Working with frameworks that recommend it (like Vue.js)</li>
+                </ul>
+            </div>
+            
+            <div class="approach">
+                <div class="approach-header">
+                    <div class="approach-icon" style="background: var(--addlistener);">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h2 class="approach-title">Use addEventListener When:</h2>
+                </div>
+                <ul style="padding-left: 20px; margin: 15px 0;">
+                    <li style="margin-bottom: 10px;">Building production applications</li>
+                    <li style="margin-bottom: 10px;">Needing multiple event handlers</li>
+                    <li style="margin-bottom: 10px;">Requiring event propagation control</li>
+                    <li style="margin-bottom: 10px;">Maintaining clean separation of concerns</li>
+                    <li>Working with dynamically created elements</li>
+                </ul>
+            </div>
+        </div>
+        
+        <h2 class="comparison-title">Best Practices</h2>
+        
+        <div class="best-practices">
+            <div class="practice-grid">
+                <div class="practice-card">
+                    <h3><i class="fas fa-thumbs-up"></i> Prefer addEventListener</h3>
+                    <p>For most production scenarios, addEventListener is the preferred approach due to its flexibility and maintainability.</p>
+                </div>
+                
+                <div class="practice-card">
+                    <h3><i class="fas fa-sitemap"></i> Use Event Delegation</h3>
+                    <p>For dynamic content, attach a single event listener to a parent element:</p>
+                    <div class="code-block">
+document.body.addEventListener('click', function(e) {
+  if (e.target.matches('.dynamic-element')) {
+    console.log('Dynamic element clicked');
+  }
+});
+                    </div>
+                    <div class="dynamic-container">
+                        <p>Click on dynamically added elements:</p>
+                        <div id="dynamic-elements"></div>
+                        <button class="btn" onclick="addDynamicElement()" style="background: var(--primary);">
+                            <i class="fas fa-plus"></i> Add Element
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="practice-card">
+                    <h3><i class="fas fa-broom"></i> Clean Up Listeners</h3>
+                    <p>Remove event listeners when they're no longer needed to prevent memory leaks:</p>
+                    <div class="code-block">
+function handleClick() { /* ... */ }
+
+// Add listener
+button.addEventListener('click', handleClick);
+
+// Later remove it
+button.removeEventListener('click', handleClick);
+                    </div>
+                </div>
+                
+                <div class="practice-card">
+                    <h3><i class="fas fa-ban"></i> Avoid Inline JavaScript</h3>
+                    <p>In large applications, avoid inline JavaScript to keep your code maintainable and separation of concerns.</p>
+                </div>
+                
+                <div class="practice-card">
+                    <h3><i class="fas fa-tachometer-alt"></i> Throttle/Debounce Expensive Handlers</h3>
+                    <p>For events that fire frequently (like scroll/resize), throttle or debounce your handlers:</p>
+                    <div class="code-block">
+window.addEventListener('resize', 
+  debounce(handleResize, 200)
+);
+                    </div>
+                </div>
+                
+                <div class="practice-card">
+                    <h3><i class="fas fa-framework"></i> Consider Framework Approaches</h3>
+                    <p>Modern frameworks like React (synthetic events), Angular (event binding), and Vue provide their own event handling systems that abstract these differences.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>06-116: Inline onclick vs addEventListener </p>
+        </div>
+    </div>
+
+    <script>
+        // Counter variables
+        let inlineCount = 0;
+        let addlistenerCount = 0;
+        
+        // Handle inline click
+        function handleClick() {
+            const output = document.getElementById('inline-console');
+            output.textContent = 'Button clicked using inline onclick!';
+        }
+        
+        // Update counter
+        function updateCounter(type) {
+            if (type === 'inline-counter') {
+                inlineCount++;
+                document.getElementById('inline-counter').textContent = `Click count: ${inlineCount}`;
+            } else if (type === 'addlistener-counter') {
+                addlistenerCount++;
+                document.getElementById('addlistener-counter').textContent = `Click count: ${addlistenerCount}`;
+            }
+        }
+        
+        // Setup addEventListener button
+        const addListenerBtn = document.getElementById('addListenerBtn');
+        
+        // First event handler
+        addListenerBtn.addEventListener('click', function() {
+            const output = document.getElementById('addlistener-console');
+            output.textContent = 'First handler executed\n';
+            updateCounter('addlistener-counter');
+        });
+        
+        // Second event handler
+        addListenerBtn.addEventListener('click', function() {
+            const output = document.getElementById('addlistener-console');
+            output.textContent += 'Second handler executed';
+        });
+        
+        // Event delegation demo
+        function addDynamicElement() {
+            const container = document.getElementById('dynamic-elements');
+            const count = container.children.length + 1;
+            const element = document.createElement('div');
+            element.className = 'dynamic-element';
+            element.textContent = `Dynamic Element ${count}`;
+            container.appendChild(element);
+        }
+        
+        // Event delegation handler
+        document.body.addEventListener('click', function(e) {
+            if (e.target.matches('.dynamic-element')) {
+                alert(`Clicked on: ${e.target.textContent}\nHandled via event delegation!`);
+            }
+        });
+        
+        // Simple debounce function for demonstration
+        function debounce(func, wait) {
+            let timeout;
+            return function() {
+                const context = this, args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    func.apply(context, args);
+                }, wait);
+            };
+        }
+    </script>
+</body>
+</html>
