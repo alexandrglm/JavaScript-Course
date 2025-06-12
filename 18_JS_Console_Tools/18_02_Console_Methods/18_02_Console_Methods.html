@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>18_02 Various Console Methods</title>
+    <!-- ACE SRCs-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.42.0/ace.js" integrity="sha512-ZFVNcFjotJAKSBDjAqsPOVW4GIFy4umHM80GBSScEKRFd93punBrbx6YqH/Gds2o1LbUwEytGBJ4QxpiS/UekQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.42.0/mode-javascript.min.js" integrity="sha512-huhE5DJyT5W8aTFrFU7wMKr/ATiKc6QJSOuARjM87z2Iw99Yg+9YuBJHRiVdvgKDWFBwSRkm69s05kgP8AqlGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.42.0/theme-monokai.min.js" integrity="sha512-g9yptARGYXbHR9r3kTKIAzF+vvmgEieTxuuUUcHC5tKYFpLR3DR+lsisH2KZJG2Nwaou8jjYVRdbbbBQI3Bo5w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>    <!-- imported styles-->
+    <!-- LATO-MERRI-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap" rel="stylesheet">
+
+    <link href="./18_02.css" rel="stylesheet">
+</head>
+<body>
+    <div class="header">
+        <h1>18_02:   Interactive Console Methods Demo</h1>
+        <div class="subtitle">Learn and experiment with... such a lot JS Console methods!</div>
+    </div>
+
+    <div class="main-container">
+        <div class="sidebar">
+            <h3>Console Methods</h3>
+            <div class="methods-list" id="methods-list"></div>
+        </div>
+
+        <div class="workspace">
+            <div class="toolbar">
+                <button class="btn examples" onclick="showExamples()"><i class="fa-solid fa-rectangle-list"></i> Examples List </button>
+                <button class="btn examples" onclick="loadRandomExample()"><i class="fa-solid fa-dice-d6"></i> Random Example</button>
+                <button class="btn" onclick="runCode()"><i class="fa-solid fa-circle-play"></i> Run Code</button>
+                <button class="btn clear" onclick="clearConsole()"><i class="fa-solid fa-eraser"></i> Clear Console</button>
+            </div>
+
+            <div class="editor-console-container">
+                <div class="editor-section">
+                    <div class="section-header">📝 JavaScript Code Editor</div>
+                    <div class="editor-container">
+                        <div id="code-editor"></div>
+                    </div>
+                </div>
+
+                <div class="console-section">
+                    <div class="section-header">📺 Console</div>
+                    <div class="custom-console" id="custom-console">
+                        <div class="console-entry">
+                            <span class="console-timestamp">00:00</span>
+                            <span class="console-content console-info">
+                                Welcome! Write some JavaScript code and press "Run Code" to see console output here.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="examples-container" id="examples-modal">
+            <div class="examples-modal">
+                <div class="examples-header">
+                    <h2>📚 Console Methods Examples</h2>
+                    <button class="btn clear" onclick="hideExamples()" style="float: right; margin-top: -10px;">✖️ Close</button>
+                </div>
+                <div class="examples-grid" id="examples-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="media-warning">
+        <div class="footer-content">
+            <span> <i class="fa-solid fa-triangle-exclamation"></i>To improve your experience with an interactive Console, please consider reloading this tab in higher resolution!</span>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js" integrity="sha512-b+nQTCdtTBIRIbraqNEwsjB6UvL3UEMkXnhzd8awtCYh0Kcsjl9uEgwVFVbhoj3uu1DO1ZMacNvLoyJJiNfcvg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="./18_02_expanded.js"></script>
+
+</body>
+</html>
