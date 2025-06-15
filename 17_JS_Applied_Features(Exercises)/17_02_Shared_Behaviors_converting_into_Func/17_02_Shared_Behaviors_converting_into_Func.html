@@ -8,42 +8,350 @@
 
 </style>
 </head>
-<style>
-    .container {
-        display: grid;
-        max-width: 80vw;
-        height: auto;
-    }
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<title>17_01 Character Countdown</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>17_02: Shared Behaviours Functions</title>
+    <style>
+        :root {
+            --light-bg: #2c2c2c;
+            --light-colour: #f5f5dc;
+            --cream-light: #f5f5dc;
+            --cream-dark: #d4c5a0;
+            --dark-accent: #1a1a1a;
+            --border-color: #444;
+        }
 
-    .container p {
-        background: #bbff00;
-        border: 2px solid black;
-    }
-    
-    .container input {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        height: 25vh;
-        width: 80vw;
-    }
-</style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-accent);
+            color: var(--cream-light);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--light-bg) 0%, #3a3a3a 100%);
+            color: var(--light-colour);
+            width: 100%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .header-data {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            background: none;
+            border: none;
+        }
+
+        .main-layout {
+            display: flex;
+            max-width: 1200px;
+            margin: 2rem auto;
+            gap: 2rem;
+            padding: 0 2rem;
+        }
+
+        .container {
+            flex: 1;
+            background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            height: 500px;
+            min-width: 0;
+        }
+
+        .text-container {
+            flex: 1;
+            background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            height: 500px;
+            overflow-x: auto;
+            overflow-y: auto;
+            min-width: 0;
+        }
+
+        .text-container h3 {
+            color: var(--cream-dark);
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+
+        .input-group {
+            margin-bottom: 2rem;
+        }
+
+        .container-title p {
+            background: linear-gradient(90deg, var(--cream-dark), var(--cream-light));
+            color: var(--dark-accent);
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .container input {
+            width: 100%;
+            height: 120px;
+            padding: 1rem;
+            background: rgba(244, 244, 244, 0.05);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--cream-light);
+            font-size: 1rem;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        .container input:focus {
+            outline: none;
+            border-color: var(--cream-dark);
+            box-shadow: 0 0 10px rgba(212, 197, 160, 0.3);
+        }
+
+        .counter {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--cream-dark);
+        }
+
+        .counter span {
+            margin-left: 0.5rem;
+            font-weight: 600;
+            color: var(--cream-light);
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+            margin: 1.5rem 0;
+        }
+
+        pre {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            white-space: pre;
+            max-width: 100%;
+        }
+
+        .text-container::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .text-container::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        .text-container::-webkit-scrollbar-thumb {
+            background: var(--cream-dark);
+            border-radius: 4px;
+        }
+
+        .text-container::-webkit-scrollbar-thumb:hover {
+            background: var(--cream-light);
+        }
+
+        pre::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        pre::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 3px;
+        }
+
+        pre::-webkit-scrollbar-thumb {
+            background: rgba(152, 195, 121, 0.5);
+            border-radius: 3px;
+        }
+
+        pre::-webkit-scrollbar-thumb:hover {
+            background: rgba(152, 195, 121, 0.7);
+        }
+
+        code {
+            color: #98c379;
+            font-family: 'Courier New', monospace;
+        }
+
+        .text-container p {
+            margin-bottom: 1rem;
+            color: var(--cream-light);
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-layout {
+                flex-direction: column;
+                padding: 0 1rem;
+            }
+            
+            .header-data {
+                padding: 1.5rem;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            pre {
+                font-size: 0.75rem;
+                padding: 0.8rem;
+            }
+        }
+    </style>
+</head>
 <body>
-    <div class="container">
-        <p>Character Container ONE</p>
-        <input text="text" class="msgInputOne">
+    <div class="header">
+        <div class="header-data">
+            <h1>17_02: Shared Behaviours Functions</h1>
+            <p>From Guide -> 06-120 - Building Shared Behaviors using JS Functions</p>
+        </div>
+    </div>
 
-        <div>
-            Characters Left -> <span class="msgCounterOne">144</span>
+    <div class="main-layout">
+        <div class="container">
+            <div class="input-group">
+                <div class="container-title">
+                    <p>Character Container ONE</p>
+                </div>
+                <input type="text" class="msgInputOne" placeholder="Escribe tu mensaje aquí...">
+                <div class="counter">
+                    Characters Left -> <span class="msgCounterOne">144</span>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="input-group">
+                <div class="container-title">
+                    <p>Character Container TWO</p>
+                </div>
+                <input type="text" class="msgInputTwo" placeholder="Escribe tu mensaje aquí...">
+                <div class="counter">
+                    Characters Left -> <span class="msgCounterTwo">20</span>
+                </div>
+            </div>
         </div>
 
-        <hr>
+        <div class="text-container">
+            <h3>What we get by refactoring!</h3>
 
-        <p>Character Container TWO </p>
-        <input text="text" class="msgInputTwo">
+            <p>Through a single function, instantiated as many as needed</p>
 
-        <div>
-            Characters Left -> <span class="msgCounterTwo">20</span>
+            <pre><code>
+        allInputsFieldLengthValidator(msgInputOne, msgCounterOne, 144);
+        allInputsFieldLengthValidator(msgInputTwo, msgCounterTwo, 20)
+            </code></pre>
+
+            <p>We set the entire behaviours ONCE:</p>
+            <pre><code>
+
+        // Firstly, we set the new vars
+        const msgInputOne = document.querySelector('.msgInputOne');
+        const msgCounterOne = document.querySelector('.msgCounterOne');
+
+        const msgInputTwo = document.querySelector('.msgInputTwo');
+        const msgCounterTwo = document.querySelector('.msgCounterTwo');
+
+                // ensure character counting
+        /*
+        *
+        * func:    ensure that the message content has (or hasn't) a max lenght characters
+        * params:  
+        *          content -> The message from input
+        *          maxValue -> The max lenght set @ maxValue const
+        * 
+        * Return:    True or False
+        */ 
+        const getCurrentContentLength = (content, maxValue) => {
+            
+            const maxLength = maxValue;
+
+            if (content.length > maxLength) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+
+        // event listeners watch for keyUp -> Pressing key, when finished typing
+        // But, NOW, we set a "global" function which can wrap any pair of "textInput + it's counter"
+        /*
+        * 
+        *   Func:       allInputsFieldLengthValidator
+        *   @params:    textField - counter - maxCount
+        * 
+        *   Invokation func( .msgInput, .msgCounter, numerical limit value)
+        *        
+        */ 
+        
+        const allInputsFieldLengthValidator = ( textField, counter, maxCount ) => {
+
+            textField.onkeyup = function () {
+            
+                console.log(this.value)
+                
+                const innerFormula = maxCount - this.value.length
+
+                counter.innerHTML = `${innerFormula}`;
+                
+                if ( !getCurrentContentLength ( this.value, (maxCount - 1) )) {
+
+                    textField.disabled = true;
+                
+                }
+            }     
+
+        }
+
+
+
+            </code></pre>
         </div>
-
     </div>
 
 
@@ -98,7 +406,9 @@
             
                 console.log(this.value)
                 
-                counter.innerHTML = maxCount - this.value.length;
+                const innerFormula = maxCount - this.value.length
+
+                counter.innerHTML = `${innerFormula}`;
                 
                 if ( !getCurrentContentLength ( this.value, (maxCount - 1) )) {
 
